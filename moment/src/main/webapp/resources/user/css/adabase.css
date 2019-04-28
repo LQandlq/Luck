@@ -1,0 +1,107 @@
+/* 通用样式 */
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td {
+	margin: 0;
+	padding: 0;
+}
+body {
+	font-family: "helvetica neue",arial,sans-serif;
+	font-size: 14px;
+	color: #444;
+	overflow-x: hidden;
+}
+input, textarea, keygen, select, button {
+	text-rendering: auto;
+	color: initial;
+	letter-spacing: normal;
+	word-spacing: normal;
+	text-transform: none;
+	text-indent: 0px;
+	text-shadow: none;
+	display: inline-block;
+	text-align: start;
+	margin: 0em 0em 0em 0em;
+	font: 12.6667px Arial;
+}
+input:focus, textarea:focus, keygen:focus, select:focus {
+	outline-offset: -2px;
+}
+input, textarea, select {
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	resize: none;
+	outline: 0;
+}
+/* a标签的下划线 */
+a:hover {
+	color: #9A0000;
+}
+a {
+	color: #222;
+	text-decoration: none;
+	outline: 0;
+	cursor:pointer;
+}
+
+/* 去掉小圆点 */
+ol,ul{
+	list-style: none;
+}
+
+/* 清除浮动 */
+.f-l{
+	float: left;
+}
+.f-r{
+	float: right;
+}
+
+/* 清除浮动 */
+.clearfix::before,
+.clearfix::after{
+	content:'';
+	display: block;
+	line-height: 0;
+	height: 0;
+	visibility: hidden;
+	clear: both;
+}
+.w{
+	width: 996px;
+	margin:0 auto;
+}
+.recommend-line:before {
+	left: 0;
+}
+.recommend-line:before,.recommend-line:after {
+	display: block;
+	position: absolute;
+	top: 28px;
+	width: 44%;
+	content: "";
+	border-top: 1px solid #ededed;
+}
+
+.recommend-line:after {
+	right: 0;
+}
+.header .header-box .l-header a.colorY{
+	color:#444;
+	text-decoration: none;
+}
+.header .header-box .l-header a.colorX{
+	color: #c90000;
+}
+.header .header-box .r-header a.btncct{
+	background: linear-gradient( #FAFAFA, #F2F2F2);
+	border: 1px solid #D9D9D9;
+	cursor: pointer;
+	text-decoration: none;
+	color: #444;
+}
+h2:hover {
+	color: #9A0000;
+}
+
+
+

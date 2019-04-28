@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.moment.pic.dao.PicVOMapper" >
+  <resultMap id="BaseResultMap" type="com.moment.pic.domain.PicVO" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="ispublic" property="ispublic" jdbcType="VARCHAR" />
+    <result column="picpath" property="picpath" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+    <result column="userid" property="userid" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="piclike" property="piclike" jdbcType="INTEGER" />
+    <result column="collect" property="collect" jdbcType="INTEGER" />
+    <result column="comment" property="comment" jdbcType="INTEGER" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+  </resultMap>
+  <!-- 扩展map -->
+   <resultMap id="EXUserResultMap" type="com.moment.pic.domain.PicEX" >
+   <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="ispublic" property="ispublic" jdbcType="VARCHAR" />
+    <result column="picpath" property="picpath" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+    <result column="userid" property="userid" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="piclike" property="piclike" jdbcType="INTEGER" />
+    <result column="collect" property="collect" jdbcType="INTEGER" />
+    <result column="comment" property="comment" jdbcType="INTEGER" />
+    <result column="ed" property="ed" jdbcType="INTEGER" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <!-- userex中已经扩展了用户等级，通过访问grade来获取用户的等级 -->
+    <association property="user" javaType="com.moment.user.domain.UserEX">
+    	<id column="user_id" property="id" jdbcType="INTEGER" />
+    	<result column="sex" property="sex" jdbcType="VARCHAR" />
+    	<result column="username" property="username" jdbcType="VARCHAR" />
+    	<result column="account" property="account" jdbcType="VARCHAR" />
+    	<result column="gradeid" property="gradeid" jdbcType="INTEGER" />
+    	<result column="img" property="img" jdbcType="INTEGER" />
+    	<result column="grade" property="grade.grade" jdbcType="INTEGER" />
+    	<result column="user_name" property="username" jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, name, description, ispublic, picpath, time, userid, type, piclike, collect, comment
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.moment.pic.domain.PicVOExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pic
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <!-- id="selectPicDetailByExample" -->
+  <select  id="selectfind" resultMap="EXUserResultMap" parameterType="com.moment.pic.domain.PicVOExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    pic.id, pic.name, pic.description, pic.ispublic, pic.picpath, pic.time, pic.userid, pic.type, pic.piclike, pic.collect, pic.comment,
+    user.id as user_id,user.sex,user.username as user_name,user.account,user.gradeid,user.img,
+    grade.grade
+	FROM
+	pic,user,grade 
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    and  pic.userid=user.id and user.gradeid=grade.id and pic.state=0
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+    <select id="selectPicDetailById" resultMap="EXUserResultMap" parameterType="java.lang.Integer" >
+    select
+    pic.id, pic.name, pic.description, pic.ispublic, pic.picpath, pic.time, pic.userid, pic.type, pic.piclike, pic.collect, pic.comment,
+    user.id as user_id,user.sex,user.username as user_name,user.account,user.gradeid,user.img
+	FROM
+	pic,user
+    where pic.id = #{id,jdbcType=INTEGER}
+    and  pic.userid=user.id
+  </select>
+   <select id="selectPicEXByExample" resultMap="BaseResultMap" parameterType="com.moment.pic.domain.PicVOExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pic
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from pic
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from pic
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <!-- 删除举报信息 -->
+  <delete id="deletepicreport" parameterType="java.lang.Integer" >
+    delete from reports
+    where picid = #{id,jdbcType=INTEGER}
+  </delete>
+  
+   <!-- 删除作品的评论信息 -->
+  <delete id="deletepiccomment" parameterType="java.lang.Integer" >
+    delete from comment
+    where picid = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <delete id="deleteByExample" parameterType="com.moment.pic.domain.PicVOExample" >
+    delete from pic
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.moment.pic.domain.PicVO" useGeneratedKeys="true" keyProperty="id" >
+    insert into pic (id, name, description, 
+      ispublic, picpath, time, 
+      userid, type, piclike, 
+      collect, comment)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{ispublic,jdbcType=VARCHAR}, #{picpath,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP}, 
+      #{userid,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, #{piclike,jdbcType=INTEGER}, 
+      #{collect,jdbcType=INTEGER}, #{comment,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.moment.pic.domain.PicVO" useGeneratedKeys="true" keyProperty="id" >
+    insert into pic
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="ispublic != null" >
+        ispublic,
+      </if>
+      <if test="picpath != null" >
+        picpath,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="piclike != null" >
+        piclike,
+      </if>
+      <if test="collect != null" >
+        collect,
+      </if>
+      <if test="comment != null" >
+        comment,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="ispublic != null" >
+        #{ispublic,jdbcType=VARCHAR},
+      </if>
+      <if test="picpath != null" >
+        #{picpath,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="piclike != null" >
+        #{piclike,jdbcType=INTEGER},
+      </if>
+      <if test="collect != null" >
+        #{collect,jdbcType=INTEGER},
+      </if>
+      <if test="comment != null" >
+        #{comment,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.moment.pic.domain.PicVOExample" resultType="java.lang.Integer" >
+    select count(*) from pic
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update pic
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.description != null" >
+        description = #{record.description,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ispublic != null" >
+        ispublic = #{record.ispublic,jdbcType=VARCHAR},
+      </if>
+      <if test="record.picpath != null" >
+        picpath = #{record.picpath,jdbcType=VARCHAR},
+      </if>
+      <if test="record.time != null" >
+        time = #{record.time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.userid != null" >
+        userid = #{record.userid,jdbcType=INTEGER},
+      </if>
+      <if test="record.type != null" >
+        type = #{record.type,jdbcType=VARCHAR},
+      </if>
+      <if test="record.piclike != null" >
+        piclike = #{record.piclike,jdbcType=INTEGER},
+      </if>
+      <if test="record.collect != null" >
+        collect = #{record.collect,jdbcType=INTEGER},
+      </if>
+      <if test="record.comment != null" >
+        comment = #{record.comment,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update pic
+    set id = #{record.id,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      description = #{record.description,jdbcType=VARCHAR},
+      ispublic = #{record.ispublic,jdbcType=VARCHAR},
+      picpath = #{record.picpath,jdbcType=VARCHAR},
+      time = #{record.time,jdbcType=TIMESTAMP},
+      userid = #{record.userid,jdbcType=INTEGER},
+      type = #{record.type,jdbcType=VARCHAR},
+      piclike = #{record.piclike,jdbcType=INTEGER},
+      collect = #{record.collect,jdbcType=INTEGER},
+      comment = #{record.comment,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.moment.pic.domain.PicVO" >
+    update pic
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="ispublic != null" >
+        ispublic = #{ispublic,jdbcType=VARCHAR},
+      </if>
+      <if test="picpath != null" >
+        picpath = #{picpath,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="piclike != null" >
+        piclike = #{piclike,jdbcType=INTEGER},
+      </if>
+      <if test="collect != null" >
+        collect = #{collect,jdbcType=INTEGER},
+      </if>
+      <if test="comment != null" >
+        comment = #{comment,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.moment.pic.domain.PicVO" >
+    update pic
+    set name = #{name,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      ispublic = #{ispublic,jdbcType=VARCHAR},
+      picpath = #{picpath,jdbcType=VARCHAR},
+      time = #{time,jdbcType=TIMESTAMP},
+      userid = #{userid,jdbcType=INTEGER},
+      type = #{type,jdbcType=VARCHAR},
+      piclike = #{piclike,jdbcType=INTEGER},
+      collect = #{collect,jdbcType=INTEGER},
+      comment = #{comment,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectgenre" resultType="com.moment.pic.domain.GenreVO">
+    select * from genre where state=0
+  </select>
+  <!-- 查询此用户发布的作品 -->
+  <select id="selectmypic" resultType="com.moment.pic.domain.PicEX" parameterType="int">
+    select * from pic where userid =#{value,jdbcType=INTEGER}   
+  </select>
+  
+   <!-- 查询此用户收藏的作品 -->
+  <select id="selectcollectpic" resultType="com.moment.pic.domain.PicEX" parameterType="int">
+   SELECT * FROM pic p,collectpic c WHERE p.id=c.picid AND c.collectionid=#{value,jdbcType=INTEGER}  
+  </select>
+  
+  <select id="selectcollectpicuser" resultType="com.moment.pic.domain.CollectVO" parameterType="com.moment.pic.domain.CollectVO">
+   SELECT * FROM collectpic  WHERE collectionid=#{collectid,jdbcType=INTEGER}  AND picid=#{picid,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 作品点赞
+  //查询所有作品并标记那些被点赞过
+  SELECT p.*,pu.id AS ed FROM pic p LEFT JOIN picuserrel pu ON p.id=pu.picid AND pu.userid=2
+   -->
+   <select id="selectlist" resultMap="EXUserResultMap" >
+   SELECT p.*,u.img,u.name AS user_name,pu.id AS ed FROM pic p LEFT JOIN picuserrel pu ON (p.id=pu.picid AND pu.userid=2) LEFT JOIN user u ON p.userid=u.id   
+   </select>
+   
+    <select id="selectlikepic" resultType="com.moment.pic.domain.picuserlike" parameterType="com.moment.pic.domain.picuserlike">
+     SELECT * from picuserrel WHERE userid=#{userid,jdbcType=INTEGER} AND picid=#{picid,jdbcType=INTEGER}
+   </select>
+   
+   
+   
+   <!-- 此处用picvo实体类代替，因为其中有userid 和picid -->
+  	<insert id="insertlikepic"  parameterType="com.moment.pic.domain.PicVO">
+    INSERT INTO picuserrel (userid,picid) VALUES(#{userid,jdbcType=INTEGER},#{id,jdbcType=INTEGER})
+  	</insert>
+  	
+  	<delete id="deletelikepic" parameterType="com.moment.pic.domain.PicVO" >
+    delete from picuserrel
+    where userid = #{userid,jdbcType=INTEGER} AND picid=#{id,jdbcType=INTEGER}
+  </delete>
+  
+  
+  
+  <!-- 作品收藏 -->
+  <insert id="insertcollectpic"  parameterType="com.moment.pic.domain.PicVO">
+    INSERT INTO collectpic (picid,collectionid) VALUES(#{id,jdbcType=INTEGER},#{userid,jdbcType=INTEGER})
+  	</insert>
+  	
+  
+  
+  <delete id="deletecollectpic" parameterType="com.moment.pic.domain.PicVO" >
+    delete from collectpic
+    where collectionid = #{userid,jdbcType=INTEGER} AND picid=#{id,jdbcType=INTEGER}
+  </delete>
+ 
+   <select id="selecttypelist" resultMap="EXUserResultMap" parameterType="com.moment.pic.domain.PicVO" >
+   select * from pic p,user u WHERE p.userid=u.id
+   <if test="type!=null">
+   AND type=#{type,jdbcType=VARCHAR}
+   </if>
+   ORDER BY	
+		<choose>
+			<when test="ispublic != null">
+			${ispublic}
+			</when>
+		<otherwise>
+			piclike
+		</otherwise>
+		</choose>		
+		<choose>
+			<when test="description != null">
+				${description}
+			</when>
+			<otherwise>
+				desc
+			</otherwise>
+		</choose>
+
+   </select> 
+ <!--  <select id="selecttypelist" resultMap="EXUserResultMap" parameterType="com.moment.pic.domain.PicVO">
+  select * from pic p join user u on p.userid=u.id 
+  <where>
+  <if test="type!=null">type=#{type}</if>
+  <if test="ispublic!=null">
+  	ORDER BY ${ispublic,jdbcType=VARCHAR}  DESC
+   </if>
+  </where>
+  </select> -->
+  <select id="selecthotpic" resultMap="EXUserResultMap" parameterType="com.moment.pic.domain.PicVO">
+  	select * from pic ,user where pic.userid=user.id AND state=0
+  	<if test="type!=null">
+  	AND type = #{type}
+  	</if> 
+  	<!-- 如果按热度查询的话只查询当月热度 -->
+  	<!--  <if test="piclike != null">
+  	AND DATE_FORMAT( pic.time, '%Y%m' )=DATE_FORMAT( CURDATE( ) ,'%Y%m' )
+  	</if>  -->
+  	 ORDER BY	
+		<choose>
+			<when test="piclike != null">
+			pic.piclike 
+			</when>
+			<when test="ispublic != null">
+			pic.time
+			</when>
+		<otherwise>
+			comment
+		</otherwise>
+		</choose>	
+		DESC
+		<choose>
+			<when test="ed != null">
+				limit #{ed,jdbcType=INTEGER},#{state,jdbcType=INTEGER}
+			</when>
+		<otherwise>
+			limit 16
+		</otherwise>
+		</choose>
+		<!-- <if test="ed != null">
+  		limit #{ed,jdbcType=INTEGER}
+  	</if> -->
+  </select>
+  
+  <!-- 排行版作品查询 -->
+  <!-- 使用ispublic判断是否为周榜 -->
+  <select id="select_top" resultMap="EXUserResultMap" parameterType="com.moment.pic.domain.PicVO">
+ SELECT *
+FROM pic p
+LEFT JOIN user u
+ON p.userid=u.id 
+ <choose>
+ 			<!--周榜  -->
+			<when test="ispublic != null">			
+			WHERE WEEKOFYEAR(p.time)=WEEKOFYEAR(now())
+			</when>
+			<!--月榜  -->
+			<when test="piclike != null">
+			where MONTH(p.time)=MONTH(NOW()) and year(p.time)=year(now())
+			</when>
+		<!--总榜  -->
+		<otherwise>
+			
+		</otherwise>
+		</choose> 
+		ORDER BY p.piclike DESC LIMIT 6
+   </select>
+   <!-- 查询用户关注列表 -->
+    <select id="userfollow" resultMap="EXUserResultMap" parameterType="java.lang.Integer">
+	SELECT * FROM uf WHERE
+userid in(SELECT fuserid FROM user_follow WHERE userid=#{id,jdbcType=INTEGER})
+ORDER BY userid,piclike DESC;
+  </select>
+  
+  <!-- 删除用户关注   使用picVOz装用户id和关注用户id piclike代表userid  collect代表fuserid -->
+    <delete id="deleteuserfollow" parameterType="com.moment.pic.domain.PicVO" >
+   DELETE FROM user_follow
+	WHERE userid=#{piclike,jdbcType=INTEGER}  AND  fuserid=#{collect,jdbcType=INTEGER}
+  </delete>
+  
+  <!-- 用于详情页作者的其他4幅作品展示 -->
+  <select id="selectother4" resultMap="EXUserResultMap" parameterType="com.moment.pic.domain.PicVO">
+  SELECT * from pp WHERE userid =#{userid,jdbcType=INTEGER} AND id!=#{id,jdbcType=INTEGER} LIMIT 4
+  </select>
+  <!-- 删除分类 -->
+  <delete id="deletegenre" parameterType="java.lang.Integer" >
+    delete from genre
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <!-- 添加分类 -->
+  <insert id="insertgenre"  parameterType="String" useGeneratedKeys="true" keyProperty="id">
+   INSERT INTO genre (id,name) VALUES(null,#{id})
+  </insert>
+  
+  <!-- 作品搜索 -->
+  <select id="selectPicDetailByExample" resultMap="EXUserResultMap" parameterType="com.moment.pic.domain.PicVOExample">
+  SELECT * FROM pp WHERE `name` LIKE #{findkey}  OR description like #{findkey} 
+  <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null" >
+      <if test="offset != null" >
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null" >
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  
+  <select id="selectPicFromoUser" parameterType="Map" resultMap="EXUserResultMap">
+  	SELECT * FROM pp WHERE userid in 
+  	(SELECT fuserid from user_follow WHERE userid=${userid})
+  	<if test="type!=null">
+  		AND type=#{type,jdbcType=VARCHAR}  
+  	</if>
+  		ORDER BY pp.time
+  	<choose>
+			<when test="ed != null">
+				limit #{ed,jdbcType=INTEGER},#{state,jdbcType=INTEGER}
+			</when>
+		<otherwise>
+			limit 16
+		</otherwise>
+		</choose>
+  
+  </select>
+  
+  
+</mapper>
